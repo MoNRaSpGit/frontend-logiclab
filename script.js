@@ -247,7 +247,7 @@ function createQuoteController(panelEl) {
             .map(
               (plan, index) => `
             <button type="button" class="quote-plan-card${plan.featured ? " quote-plan-card-featured" : ""}" data-plan-index="${index}">
-              ${plan.featured ? '<span class="quote-plan-card-badge">⭐ El más elegido</span>' : ""}
+              ${plan.featured ? '<span class="quote-plan-card-badge">⭐ Recomendado</span>' : ""}
               <div class="quote-plan-card-name">${plan.name}</div>
               <div class="quote-plan-card-price">${renderPriceTag(plan.price)}</div>
               <div class="quote-plan-card-items">${plan.items.length ? `Incluye: ${plan.items.join(", ")}` : "La base, sin extras"}</div>
