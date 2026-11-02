@@ -60,12 +60,13 @@ const PRICE_GROUPS = {
   caja: { standard: 500, complete: 900, pro: 1300, extraPrice: 250 }
 };
 
-// Oferta de lanzamiento: -20% en cualquier plan, para siempre, para los
-// primeros 5 negocios. LAUNCH_DEADLINE queda vacía hasta que el usuario
-// defina la fecha límite; mientras esté vacía, no se muestra. Para cerrar
-// la oferta del todo (se llenaron los 5 lugares o pasó la fecha), pasar
-// LAUNCH_OFFER_ACTIVE a false.
-const LAUNCH_OFFER_ACTIVE = true;
+// Oferta "Precio de bienvenida": -20% en cualquier plan, para siempre, para
+// los próximos 5 negocios. Apagada por ahora (02/11/2026): sale recién con
+// el reel de la oferta la semana que viene. LAUNCH_DEADLINE queda vacía
+// hasta que el usuario defina la fecha límite; mientras esté vacía, no se
+// muestra. Para apagar/prender toda la oferta, un solo flag:
+// LAUNCH_OFFER_ACTIVE.
+const LAUNCH_OFFER_ACTIVE = false;
 const LAUNCH_DEADLINE = "";
 const LAUNCH_DISCOUNT = 0.2;
 const LAUNCH_SPOTS = 5;
@@ -156,7 +157,7 @@ function buildWhatsappUrl(message) {
 
 function buildQuoteMessage(keyword, descriptor, total) {
   const price = LAUNCH_OFFER_ACTIVE ? launchPrice(total) : total;
-  const suffix = LAUNCH_OFFER_ACTIVE ? " (precio de lanzamiento)" : "";
+  const suffix = LAUNCH_OFFER_ACTIVE ? " (precio de bienvenida)" : "";
   return `Hola! Armé mi presupuesto de ${keyword}: ${descriptor} ≈ $${price}/mes${suffix}`;
 }
 
@@ -171,7 +172,7 @@ function renderPriceTag(price) {
 function renderLaunchBanner() {
   if (!LAUNCH_OFFER_ACTIVE) return "";
   const deadline = LAUNCH_DEADLINE ? ` antes del ${LAUNCH_DEADLINE}` : "";
-  return `<div class="quote-launch-banner">Precio de lanzamiento: −20% para siempre, para los primeros ${LAUNCH_SPOTS} negocios${deadline}</div>`;
+  return `<div class="quote-launch-banner">Precio de bienvenida: −20% para siempre, para los próximos ${LAUNCH_SPOTS} negocios${deadline}</div>`;
 }
 
 function setupWhatsappLinks() {
@@ -206,7 +207,7 @@ function setupHeroVideo() {
 
 // Cotizador dentro del modal de cada rubro: elegir planes armados o armar
 // el propio con casillas, y terminar siempre mandando el presupuesto por
-// WhatsApp. Precio de lanzamiento (-20%) incluido mientras esté activo.
+// WhatsApp. Precio de bienvenida (-20%) incluido mientras esté activo.
 function createQuoteController(panelEl) {
   let rubro = null;
   let step = "choice";
