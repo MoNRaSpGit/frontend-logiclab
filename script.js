@@ -1,5 +1,25 @@
 const WHATSAPP_NUMBER = "59892945696";
 
+// Medición (GoatCounter). No-op si la cuenta todavía no está creada o el
+// script no cargó (ej. bloqueado por un adblock) — nunca rompe la página.
+function gcTrack(path) {
+  try {
+    if (window.goatcounter && typeof window.goatcounter.count === "function") {
+      window.goatcounter.count({ path, event: true });
+    }
+  } catch (e) {
+    /* medición opcional, nunca debe romper la página */
+  }
+}
+
+// Lee ?src=whatsapp|instagram|bio|google de la URL y lo registra como
+// evento para saber de dónde vino la visita. El link con ?src=whatsapp va
+// en el mensaje automático de WhatsApp Business (pendiente de cargar U).
+function trackVisitSource() {
+  const src = new URLSearchParams(window.location.search).get("src");
+  if (src) gcTrack(`visita-origen/${src}`);
+}
+
 const RUBRO_VIDEO = {
   almacen: { src: "media/reels/almacen.mp4", keyword: "ALMACÉN", label: "Almacén y kiosco" },
   gimnasio: { src: "media/reels/gimnasio.mp4", keyword: "GIMNASIO", label: "Gimnasio" },
@@ -96,6 +116,8 @@ function setupWhatsappLinks() {
     link.setAttribute("href", buildWhatsappUrl(message));
     link.setAttribute("target", "_blank");
     link.setAttribute("rel", "noopener");
+    const section = link.getAttribute("data-wa-section") || "otro";
+    link.addEventListener("click", () => gcTrack(`wa-click/${section}`));
   });
 }
 
@@ -234,9 +256,15 @@ function createQuoteController(panelEl) {
       button.addEventListener("click", () => {
         const plan = getPlans(rubro)[Number(button.getAttribute("data-plan-index"))];
         const url = buildWhatsappUrl(buildQuoteMessage(entry.keyword, `Plan ${plan.name}`, plan.price));
+        gcTrack(`cotizador-enviar/${rubro}-plan-${plan.name.toLowerCase()}`);
         window.open(url, "_blank", "noopener");
       });
     });
+
+    const sendButton = panelEl.querySelector(".quote-send-btn");
+    if (sendButton) {
+      sendButton.addEventListener("click", () => gcTrack(`cotizador-enviar/${rubro}-custom`));
+    }
 
     panelEl.querySelectorAll("[data-extra-key]").forEach((checkbox) => {
       checkbox.addEventListener("change", () => {
@@ -273,6 +301,7 @@ function setupRubroVideos() {
     if (!currentRubro) return;
     stage.hidden = true;
     player.pause();
+    gcTrack(`cotizador-abrir/${currentRubro}`);
     quote.open(currentRubro);
   }
 
@@ -287,6 +316,7 @@ function setupRubroVideos() {
     cta.href = buildWhatsappUrl(`Hola! Vi el video de ${entry.keyword}`);
     cta.classList.remove("video-modal-cta-pulse");
     question.hidden = true;
+    gcTrack(`ver-video/${rubro}`);
   }
 
   function closeModal() {
@@ -304,6 +334,10 @@ function setupRubroVideos() {
   player.addEventListener("ended", () => {
     cta.classList.add("video-modal-cta-pulse");
     question.hidden = false;
+  });
+
+  cta.addEventListener("click", () => {
+    if (currentRubro) gcTrack(`wa-click/rubro-${currentRubro}`);
   });
 
   quoteOpenButtons.forEach((button) => {
@@ -331,3 +365,4 @@ function setupRubroVideos() {
 setupWhatsappLinks();
 setupHeroVideo();
 setupRubroVideos();
+trackVisitSource();

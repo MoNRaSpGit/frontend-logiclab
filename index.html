@@ -8,10 +8,14 @@
       name="description"
       content="Logic Lab hace apps para negocios de Tacuarembó: ventas, stock, turnos, cuentas y pedidos. Sistema para negocios a tu medida. Probalo 1 mes gratis."
     />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://monraspgit.github.io/frontend-logiclab/" />
     <meta property="og:title" content="Logic Lab · Apps para tu negocio en Tacuarembó" />
     <meta property="og:description" content="Ventas, stock, turnos, cuentas y pedidos. Probalo 1 mes gratis." />
-    <meta property="og:image" content="media/assets/og-image.png" />
+    <meta property="og:image" content="https://monraspgit.github.io/frontend-logiclab/media/assets/og-image.png" />
+    <meta property="og:url" content="https://monraspgit.github.io/frontend-logiclab/" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_UY" />
     <link rel="icon" href="media/assets/logo.png" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,6 +24,41 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+
+    <!--
+      Google Search Console: cuando el usuario cree la cuenta (gratis, con su
+      cuenta de Google) y agregue esta propiedad, va a dar una meta tag de
+      verificación. Descomentar la siguiente línea y pegar el content que
+      Google indique.
+    -->
+    <!-- <meta name="google-site-verification" content="PEGAR_CODIGO_AQUI" /> -->
+
+    <!--
+      Medición: GoatCounter (gratis, sin cookies, sin cartel de cookies).
+      El usuario tiene que crear una cuenta en https://www.goatcounter.com/
+      (elige un código de sitio, ej: logiclab) y reemplazar MYCODE abajo.
+    -->
+    <script data-goatcounter="https://MYCODE.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Logic Lab",
+        "description": "Apps a medida para negocios: ventas, stock, turnos, cuentas y pedidos.",
+        "url": "https://monraspgit.github.io/frontend-logiclab/",
+        "image": "https://monraspgit.github.io/frontend-logiclab/media/assets/og-image.png",
+        "telephone": "+59892945696",
+        "priceRange": "$150 - $600",
+        "areaServed": "Uruguay",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Tacuarembó",
+          "addressCountry": "UY"
+        },
+        "sameAs": ["https://instagram.com/logiclabsoluciones"]
+      }
+    </script>
   </head>
   <body>
     <header class="topbar">
@@ -31,6 +70,7 @@
         <a
           class="btn btn-whatsapp btn-small"
           data-wa
+          data-wa-section="topbar"
           data-wa-msg="Hola! Quiero probar el mes gratis"
           href="#"
         >
@@ -49,7 +89,13 @@
             Ventas, stock, turnos, cuentas y pedidos. Hechas a la medida de tu negocio, con soporte por WhatsApp.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-gold btn-large" data-wa data-wa-msg="Hola! Quiero probar el mes gratis" href="#">
+            <a
+              class="btn btn-gold btn-large"
+              data-wa
+              data-wa-section="hero"
+              data-wa-msg="Hola! Quiero probar el mes gratis"
+              href="#"
+            >
               Probalo 1 mes gratis
             </a>
             <a class="btn btn-ghost btn-large" href="#rubros">Ver cómo funciona</a>
@@ -78,7 +124,7 @@
         <div class="rubros-grid">
           <article class="rubro-card" data-rubro="almacen">
             <button type="button" class="rubro-media" data-play-video>
-              <img src="media/portadas/almacen.webp" alt="Almacén y kiosco" loading="lazy" />
+              <img src="media/portadas/almacen.webp" alt="Sistema para almacén y kiosco en Tacuarembó" loading="lazy" />
               <span class="rubro-play">▶</span>
             </button>
             <div class="rubro-info">
@@ -89,7 +135,7 @@
 
           <article class="rubro-card" data-rubro="gimnasio">
             <button type="button" class="rubro-media" data-play-video>
-              <img src="media/portadas/gimnasio.webp" alt="Gimnasio" loading="lazy" />
+              <img src="media/portadas/gimnasio.webp" alt="App para gimnasio en Uruguay" loading="lazy" />
               <span class="rubro-play">▶</span>
             </button>
             <div class="rubro-info">
@@ -100,7 +146,7 @@
 
           <article class="rubro-card" data-rubro="restaurante">
             <button type="button" class="rubro-media" data-play-video>
-              <img src="media/portadas/restaurante.webp" alt="Restaurante" loading="lazy" />
+              <img src="media/portadas/restaurante.webp" alt="Sistema de pedidos y comanda para restaurante" loading="lazy" />
               <span class="rubro-play">▶</span>
             </button>
             <div class="rubro-info">
@@ -111,7 +157,7 @@
 
           <article class="rubro-card" data-rubro="reservas">
             <button type="button" class="rubro-media" data-play-video>
-              <img src="media/portadas/reservas.webp" alt="Turnos y reservas" loading="lazy" />
+              <img src="media/portadas/reservas.webp" alt="App de turnos y reservas para barbería y profesionales en Uruguay" loading="lazy" />
               <span class="rubro-play">▶</span>
             </button>
             <div class="rubro-info">
@@ -122,7 +168,7 @@
 
           <article class="rubro-card" data-rubro="distribuidora">
             <button type="button" class="rubro-media" data-play-video>
-              <img src="media/portadas/distribuidora.webp" alt="Distribuidora" loading="lazy" />
+              <img src="media/portadas/distribuidora.webp" alt="Sistema para distribuidora y reparto en Uruguay" loading="lazy" />
               <span class="rubro-play">▶</span>
             </button>
             <div class="rubro-info">
@@ -133,7 +179,7 @@
 
           <article class="rubro-card" data-rubro="campo">
             <button type="button" class="rubro-media" data-play-video>
-              <img src="media/portadas/campo.webp" alt="Campo" loading="lazy" />
+              <img src="media/portadas/campo.webp" alt="Sistema de gestión de campo y ganado en Tacuarembó" loading="lazy" />
               <span class="rubro-play">▶</span>
             </button>
             <div class="rubro-info">
@@ -144,7 +190,7 @@
         </div>
         <p class="rubros-footnote">
           ¿Tu rubro no está?
-          <a data-wa data-wa-msg="Hola! Quiero una app para mi negocio" href="#">Lo hacemos a tu medida ›</a>
+          <a data-wa data-wa-section="custom" data-wa-msg="Hola! Quiero una app para mi negocio" href="#">Lo hacemos a tu medida ›</a>
         </p>
       </section>
 
@@ -196,7 +242,7 @@
           </article>
           <article class="precio-card precio-card-custom">
             <h3>A tu medida</h3>
-            <a data-wa data-wa-msg="Hola! Quiero un presupuesto" href="#" class="precio-link">Pedí tu presupuesto ›</a>
+            <a data-wa data-wa-section="custom" data-wa-msg="Hola! Quiero un presupuesto" href="#" class="precio-link">Pedí tu presupuesto ›</a>
           </article>
         </div>
         <p class="precios-footnote">Todos incluyen soporte por WhatsApp y capacitación para tu personal.</p>
@@ -233,7 +279,13 @@
         <img src="media/assets/logo.png" alt="Logic Lab" class="closing-logo" />
         <h2>Tu negocio, bajo control.</h2>
         <p>Probalo 1 mes gratis. Cancelás cuando quieras.</p>
-        <a class="btn btn-whatsapp btn-large" data-wa data-wa-msg="Hola! Quiero probar el mes gratis" href="#">
+        <a
+          class="btn btn-whatsapp btn-large"
+          data-wa
+          data-wa-section="closing"
+          data-wa-msg="Hola! Quiero probar el mes gratis"
+          href="#"
+        >
           Escribinos al 092 945 696
         </a>
         <a class="closing-instagram" href="https://instagram.com/logiclabsoluciones" target="_blank" rel="noopener">
@@ -251,6 +303,7 @@
     <a
       class="floating-whatsapp"
       data-wa
+      data-wa-section="floating"
       data-wa-msg="Hola! Quiero probar el mes gratis"
       href="#"
       aria-label="Escribinos por WhatsApp"
