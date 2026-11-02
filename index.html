@@ -267,16 +267,27 @@
       <div class="video-modal-backdrop" data-video-close></div>
       <div class="video-modal-content">
         <button type="button" class="video-modal-close" data-video-close aria-label="Cerrar video">✕</button>
-        <video class="video-modal-player" data-video-player controls playsinline></video>
-        <a
-          class="btn btn-whatsapp btn-large video-modal-cta"
-          data-video-cta
-          href="#"
-          target="_blank"
-          rel="noopener"
-        >
-          Lo quiero para mi negocio
-        </a>
+
+        <div data-video-stage>
+          <video class="video-modal-player" data-video-player controls playsinline></video>
+
+          <p class="video-modal-question" data-video-question hidden>¿Querés saber cuánto te sale?</p>
+
+          <div class="video-modal-actions">
+            <a
+              class="btn btn-whatsapp btn-large video-modal-cta"
+              data-video-cta
+              href="#"
+              target="_blank"
+              rel="noopener"
+            >
+              Lo quiero para mi negocio
+            </a>
+            <button type="button" class="btn btn-gold btn-large" data-quote-open>¿Cuánto me sale?</button>
+          </div>
+        </div>
+
+        <div class="quote-panel" data-quote-panel hidden></div>
       </div>
     </div>
 

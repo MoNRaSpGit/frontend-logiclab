@@ -590,6 +590,8 @@ p {
 .video-modal-content {
   position: relative;
   width: min(360px, 92vw);
+  max-height: 88vh;
+  overflow-y: auto;
   background: var(--card);
   border-radius: var(--radius);
   padding: 12px;
@@ -614,9 +616,201 @@ p {
   cursor: pointer;
 }
 
+.video-modal-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
 .video-modal-cta {
   width: 100%;
-  margin-top: 12px;
+}
+
+.video-modal-question {
+  margin: 12px 0 0;
+  text-align: center;
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 15px;
+}
+
+/* Cotizador */
+
+.quote-panel {
+  display: grid;
+  gap: 14px;
+  padding-top: 4px;
+}
+
+.quote-tag {
+  display: inline-flex;
+  align-self: start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(241, 207, 132, 0.15);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.quote-back {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 0;
+  cursor: pointer;
+  justify-self: start;
+  font-family: inherit;
+}
+
+.quote-title {
+  font-size: 18px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.quote-choice-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.quote-choice-btn {
+  min-height: 56px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(243, 242, 238, 0.18);
+  background: var(--card);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.quote-plans-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.quote-plan-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border-radius: var(--radius);
+  border: 1px solid rgba(243, 242, 238, 0.18);
+  background: var(--card);
+  color: var(--text);
+  padding: 14px 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.quote-plan-card-name {
+  font-weight: 900;
+  font-size: 15px;
+}
+
+.quote-plan-card-price {
+  margin-top: 4px;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.quote-plan-card-items {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.quote-base-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--card);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.quote-base-price {
+  color: var(--gold);
+}
+
+.quote-extras {
+  display: grid;
+  gap: 8px;
+}
+
+.quote-extra-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--card);
+  cursor: pointer;
+}
+
+.quote-extra-row input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--gold);
+  flex-shrink: 0;
+}
+
+.quote-extra-label {
+  flex: 1;
+  font-size: 14px;
+}
+
+.quote-extra-price {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.quote-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: rgba(241, 207, 132, 0.12);
+  border: 1px solid rgba(241, 207, 132, 0.3);
+}
+
+.quote-total-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.quote-total-value {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--gold);
+}
+
+.quote-send-btn {
+  width: 100%;
+}
+
+.quote-footnote {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: -4px;
 }
 
 .video-modal-cta-pulse {
