@@ -91,7 +91,7 @@ const QUOTE_CONFIG = {
       { key: "recordatorio", label: "Recordatorio automático al cliente" },
       { key: "estadisticas", label: "Estadísticas de tu agenda" },
       { key: "profesionales", label: "Agenda para varios profesionales" },
-      { key: "pro2", label: "Más funciones (a confirmar)" }
+      { key: "pro2", label: "Historial de cada cliente" }
     ]
   },
   distribuidora: {
