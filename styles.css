@@ -405,6 +405,14 @@ p {
 
 /* Precios */
 
+.precios-intro {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin-top: -8px;
+  margin-bottom: 20px;
+}
+
 .precios-grid {
   display: grid;
   gap: 16px;
@@ -655,6 +663,17 @@ p {
   text-transform: uppercase;
 }
 
+.quote-launch-banner {
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(37, 211, 102, 0.14);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
 .quote-back {
   background: none;
   border: none;
@@ -710,6 +729,19 @@ p {
   font-family: inherit;
 }
 
+.quote-plan-card-featured {
+  border-color: var(--gold);
+  background: rgba(241, 207, 132, 0.08);
+}
+
+.quote-plan-card-badge {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .quote-plan-card-name {
   font-weight: 900;
   font-size: 15px;
@@ -717,9 +749,28 @@ p {
 
 .quote-plan-card-price {
   margin-top: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quote-price-strike {
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-decoration: line-through;
+}
+
+.quote-price-launch {
   color: var(--gold);
-  font-weight: 700;
-  font-size: 14px;
+  font-weight: 900;
+  font-size: 16px;
+}
+
+.quote-plan-card-savings {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
 }
 
 .quote-plan-card-items {

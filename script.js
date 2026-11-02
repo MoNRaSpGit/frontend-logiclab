@@ -29,76 +29,103 @@ const RUBRO_VIDEO = {
   campo: { src: "media/reels/campo.mp4", keyword: "CAMPO", label: "Campo" }
 };
 
-// PRECIOS PROVISORIOS, los define el usuario mas adelante (brief del
-// cotizador, 01/11/2026). "Completo" = base + los 2 primeros extras,
-// "Pro" = base + todos los extras.
+// PRECIOS DEFINIDOS por el usuario 02/11/2026 — fuente: video-studio/PRECIOS.md.
+// Dos grupos (no seis grillas distintas): agenda (turnos, gimnasio) y caja
+// (almacén, restaurante, distribuidora, campo). "Completo" = base + los 2
+// primeros extras del rubro, "Pro" = base + los 4 extras — pero el precio de
+// cada plan es el fijo del grupo, no una suma.
+const PRICE_GROUPS = {
+  agenda: { standard: 350, complete: 600, pro: 850, extraPrice: 150 },
+  caja: { standard: 500, complete: 900, pro: 1300, extraPrice: 250 }
+};
+
+// Oferta de lanzamiento: -20% en cualquier plan, para siempre, para los
+// primeros 5 negocios. LAUNCH_DEADLINE queda vacía hasta que el usuario
+// defina la fecha límite; mientras esté vacía, no se muestra. Para cerrar
+// la oferta del todo (se llenaron los 5 lugares o pasó la fecha), pasar
+// LAUNCH_OFFER_ACTIVE a false.
+const LAUNCH_OFFER_ACTIVE = true;
+const LAUNCH_DEADLINE = "";
+const LAUNCH_DISCOUNT = 0.2;
+const LAUNCH_SPOTS = 5;
+
+function launchPrice(price) {
+  return Math.round(price * (1 - LAUNCH_DISCOUNT));
+}
+
 const QUOTE_CONFIG = {
   almacen: {
-    base: { label: "Ventas con escáner y tickets", price: 600 },
+    group: "caja",
+    base: { label: "Escaneás el producto y sale el ticket" },
     extras: [
-      { key: "stock", label: "Stock", price: 150 },
-      { key: "cuenta", label: "Cuenta corriente", price: 150 },
-      { key: "caja2", label: "Segunda caja", price: 100 },
-      { key: "resumen", label: "Resumen del mes en el celu", price: 100 }
+      { key: "stock", label: "Stock al día con carga de mercadería" },
+      { key: "resumen", label: "Resumen del mes con gráficas" },
+      { key: "cuenta", label: "Cuenta corriente de tus clientes" },
+      { key: "caja2", label: "Dos cajas a la vez" }
     ]
   },
   gimnasio: {
-    base: { label: "Alumnos y mensualidades", price: 350 },
+    group: "agenda",
+    base: { label: "Tus alumnos y quién te debe, marcado en rojo" },
     extras: [
-      { key: "avisos", label: "Avisos por WhatsApp", price: 100 },
-      { key: "progreso", label: "Progreso del alumno", price: 100 },
-      { key: "tienda", label: "Tienda", price: 100 },
-      { key: "gastos", label: "Control de gastos", price: 50 }
+      { key: "panel", label: "Panel de ingresos con gráficas" },
+      { key: "progreso", label: "Progreso de cada alumno" },
+      { key: "avisos", label: "Avisos de pago por WhatsApp" },
+      { key: "gastos", label: "Control de gastos" }
     ]
   },
   restaurante: {
-    base: { label: "Pedidos y comanda a cocina", price: 600 },
+    group: "caja",
+    base: { label: "Tomás el pedido y sale impreso: comanda, archivo y cliente" },
     extras: [
-      { key: "delivery", label: "Delivery con repartidores", price: 150 },
-      { key: "comandas", label: "Impresión de comandas", price: 100 },
-      { key: "cierre", label: "Cierre de caja", price: 100 },
-      { key: "cuenta", label: "Cuenta corriente", price: 100 }
+      { key: "cierre", label: "Cierre de caja" },
+      { key: "panel", label: "Panel de ventas" },
+      { key: "delivery", label: "Delivery con seguimiento de repartidores" },
+      { key: "cuenta", label: "Cuenta corriente" }
     ]
   },
   reservas: {
-    base: { label: "Página de reservas", price: 150 },
+    group: "agenda",
+    base: { label: "Reservas online las 24 h + tu agenda del día + respuesta automática con tu link" },
     extras: [
-      { key: "auto", label: "Respuesta automática por WhatsApp", price: 100 },
-      { key: "recordatorio", label: "Recordatorio al cliente", price: 50 },
-      { key: "profesionales", label: "Varios profesionales", price: 100 },
-      { key: "estadisticas", label: "Estadísticas", price: 50 }
+      { key: "recordatorio", label: "Recordatorio automático al cliente" },
+      { key: "estadisticas", label: "Estadísticas de tu agenda" },
+      { key: "profesionales", label: "Agenda para varios profesionales" },
+      { key: "pro2", label: "Más funciones (a confirmar)" }
     ]
   },
   distribuidora: {
-    base: { label: "Pedidos del vendedor en la calle", price: 600 },
+    group: "caja",
+    base: { label: "Pedidos desde la calle, directo a la oficina" },
     extras: [
-      { key: "boletas", label: "Boletas en oficina", price: 150 },
-      { key: "ruta", label: "Ruta óptima de reparto", price: 200 },
-      { key: "stock", label: "Stock", price: 150 },
-      { key: "vendedores", label: "Varios vendedores", price: 100 }
+      { key: "boletas", label: "Boletas en la oficina" },
+      { key: "stock", label: "Stock" },
+      { key: "ruta", label: "Ruta de reparto más corta" },
+      { key: "vendedores", label: "Varios vendedores" }
     ]
   },
   campo: {
-    base: { label: "Ganado y potreros", price: 500 },
+    group: "caja",
+    base: { label: "Tu ganado, potrero por potrero, con traslados" },
     extras: [
-      { key: "voz", label: "Carga por voz", price: 100 },
-      { key: "sanidad", label: "Sanidad", price: 100 },
-      { key: "lluvias", label: "Lluvias", price: 50 },
-      { key: "excel", label: "Exportar a Excel/PDF", price: 50 }
+      { key: "lluvias", label: "Registro de lluvias" },
+      { key: "sanidad", label: "Sanidad" },
+      { key: "voz", label: "Cargás hablando, por voz" },
+      { key: "excel", label: "Reportes en Excel/PDF" }
     ]
   }
 };
 
 function getPlans(rubro) {
   const cfg = QUOTE_CONFIG[rubro];
-  const extraNames = cfg.extras.map((extra) => extra.label);
-  const extraTotal = cfg.extras.reduce((sum, extra) => sum + extra.price, 0);
-  const completeExtras = cfg.extras.slice(0, 2);
-  const completeTotal = completeExtras.reduce((sum, extra) => sum + extra.price, 0);
+  const group = PRICE_GROUPS[cfg.group];
+  const completeItems = cfg.extras.slice(0, 2).map((extra) => extra.label);
+  const proItems = cfg.extras.map((extra) => extra.label);
+  const allLooseTotal = group.standard + group.extraPrice * cfg.extras.length;
   return [
-    { name: "Estándar", price: cfg.base.price, items: [] },
-    { name: "Completo", price: cfg.base.price + completeTotal, items: completeExtras.map((extra) => extra.label) },
-    { name: "Pro", price: cfg.base.price + extraTotal, items: extraNames }
+    { name: "Estándar", price: group.standard, items: [] },
+    { name: "Completo", price: group.complete, items: completeItems, featured: true },
+    { name: "Pro", price: group.pro, items: proItems, savings: allLooseTotal - group.pro }
   ];
 }
 
@@ -107,7 +134,23 @@ function buildWhatsappUrl(message) {
 }
 
 function buildQuoteMessage(keyword, descriptor, total) {
-  return `Hola! Armé mi presupuesto de ${keyword}: ${descriptor} ≈ $${total}/mes`;
+  const price = LAUNCH_OFFER_ACTIVE ? launchPrice(total) : total;
+  const suffix = LAUNCH_OFFER_ACTIVE ? " (precio de lanzamiento)" : "";
+  return `Hola! Armé mi presupuesto de ${keyword}: ${descriptor} ≈ $${price}/mes${suffix}`;
+}
+
+function renderPriceTag(price) {
+  if (!LAUNCH_OFFER_ACTIVE) return `<span class="quote-price-launch">$${price}/mes</span>`;
+  return `
+    <span class="quote-price-strike">$${price}</span>
+    <span class="quote-price-launch">$${launchPrice(price)}/mes</span>
+  `;
+}
+
+function renderLaunchBanner() {
+  if (!LAUNCH_OFFER_ACTIVE) return "";
+  const deadline = LAUNCH_DEADLINE ? ` antes del ${LAUNCH_DEADLINE}` : "";
+  return `<div class="quote-launch-banner">Precio de lanzamiento: −20% para siempre, para los primeros ${LAUNCH_SPOTS} negocios${deadline}</div>`;
 }
 
 function setupWhatsappLinks() {
@@ -142,7 +185,7 @@ function setupHeroVideo() {
 
 // Cotizador dentro del modal de cada rubro: elegir planes armados o armar
 // el propio con casillas, y terminar siempre mandando el presupuesto por
-// WhatsApp. El total nunca se muestra como precio cerrado ("≈ $X/mes").
+// WhatsApp. Precio de lanzamiento (-20%) incluido mientras esté activo.
 function createQuoteController(panelEl) {
   let rubro = null;
   let step = "choice";
@@ -169,11 +212,12 @@ function createQuoteController(panelEl) {
     const cfg = QUOTE_CONFIG[rubro];
     const entry = RUBRO_VIDEO[rubro];
     if (!cfg || !entry) return;
-    const tag = `<span class="quote-tag">Precios de ejemplo</span>`;
+    const group = PRICE_GROUPS[cfg.group];
+    const banner = renderLaunchBanner();
 
     if (step === "choice") {
       panelEl.innerHTML = `
-        ${tag}
+        ${banner}
         <h3 class="quote-title">Armá tu presupuesto</h3>
         <div class="quote-choice-grid">
           <button type="button" class="quote-choice-btn" data-step="plans">Ver planes armados</button>
@@ -183,17 +227,19 @@ function createQuoteController(panelEl) {
     } else if (step === "plans") {
       const plans = getPlans(rubro);
       panelEl.innerHTML = `
-        ${tag}
+        ${banner}
         <button type="button" class="quote-back" data-step="choice">‹ Volver</button>
         <h3 class="quote-title">Planes para ${entry.label}</h3>
         <div class="quote-plans-grid">
           ${plans
             .map(
               (plan, index) => `
-            <button type="button" class="quote-plan-card" data-plan-index="${index}">
+            <button type="button" class="quote-plan-card${plan.featured ? " quote-plan-card-featured" : ""}" data-plan-index="${index}">
+              ${plan.featured ? '<span class="quote-plan-card-badge">⭐ El más elegido</span>' : ""}
               <div class="quote-plan-card-name">${plan.name}</div>
-              <div class="quote-plan-card-price">desde $${plan.price}/mes</div>
+              <div class="quote-plan-card-price">${renderPriceTag(plan.price)}</div>
               <div class="quote-plan-card-items">${plan.items.length ? `Incluye: ${plan.items.join(", ")}` : "La base, sin extras"}</div>
+              ${plan.savings ? `<div class="quote-plan-card-savings">Ahorrás $${plan.savings}/mes comparado a todo suelto</div>` : ""}
             </button>
           `
             )
@@ -202,15 +248,15 @@ function createQuoteController(panelEl) {
       `;
     } else if (step === "custom") {
       const selectedExtras = cfg.extras.filter((extra) => selected.has(extra.key));
-      const total = cfg.base.price + selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
+      const total = group.standard + selectedExtras.length * group.extraPrice;
       const descriptor = selectedExtras.length ? selectedExtras.map((extra) => extra.label).join(", ") : "Plan base";
       panelEl.innerHTML = `
-        ${tag}
+        ${banner}
         <button type="button" class="quote-back" data-step="choice">‹ Volver</button>
         <h3 class="quote-title">Armá el tuyo</h3>
         <div class="quote-base-row">
           <span>${cfg.base.label}</span>
-          <span class="quote-base-price">$${cfg.base.price}/mes</span>
+          <span class="quote-base-price">$${group.standard}/mes</span>
         </div>
         <div class="quote-extras">
           ${cfg.extras
@@ -219,7 +265,7 @@ function createQuoteController(panelEl) {
             <label class="quote-extra-row">
               <input type="checkbox" data-extra-key="${extra.key}" ${selected.has(extra.key) ? "checked" : ""} />
               <span class="quote-extra-label">${extra.label}</span>
-              <span class="quote-extra-price">+$${extra.price}</span>
+              <span class="quote-extra-price">+$${group.extraPrice}</span>
             </label>
           `
             )
@@ -227,7 +273,7 @@ function createQuoteController(panelEl) {
         </div>
         <div class="quote-total-row">
           <span class="quote-total-label">Total aproximado</span>
-          <span class="quote-total-value">≈ $${total}/mes</span>
+          <span class="quote-total-value">${renderPriceTag(total)}</span>
         </div>
         <a
           class="btn btn-whatsapp btn-large quote-send-btn"
