@@ -387,13 +387,22 @@ p {
 
 /* Clientes */
 
-.clientes-placeholder {
-  text-align: center;
-  color: var(--text-secondary);
-  font-style: italic;
-  padding: 24px;
-  border: 1px dashed rgba(243, 242, 238, 0.25);
-  border-radius: var(--radius);
+.clientes-logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+  padding: 8px 0;
+}
+
+.clientes-logos img {
+  height: 40px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  opacity: 0.85;
+  filter: grayscale(0.15);
 }
 
 .clientes-count {
@@ -443,6 +452,11 @@ p {
   color: var(--gold);
   font-weight: 800;
   font-size: 16px;
+}
+
+.precio-card-featured {
+  border: 1px solid var(--gold);
+  background: rgba(241, 207, 132, 0.08);
 }
 
 .precio-card-custom {
@@ -732,6 +746,11 @@ p {
 .quote-plan-card-featured {
   border-color: var(--gold);
   background: rgba(241, 207, 132, 0.08);
+}
+
+.quote-plan-card-custom {
+  text-decoration: none;
+  border-style: dashed;
 }
 
 .quote-plan-card-badge {

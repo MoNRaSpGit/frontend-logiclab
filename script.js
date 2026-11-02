@@ -50,15 +50,13 @@ const RUBRO_VIDEO = {
   campo: { src: "media/reels/campo.mp4", keyword: "CAMPO", label: "Campo" }
 };
 
-// PRECIOS DEFINIDOS por el usuario 02/11/2026 — fuente: video-studio/PRECIOS.md.
-// Dos grupos (no seis grillas distintas): agenda (turnos, gimnasio) y caja
-// (almacén, restaurante, distribuidora, campo). "Completo" = base + los 2
-// primeros extras del rubro, "Pro" = base + los 4 extras — pero el precio de
-// cada plan es el fijo del grupo, no una suma.
-const PRICE_GROUPS = {
-  agenda: { standard: 350, complete: 600, pro: 850, extraPrice: 150 },
-  caja: { standard: 500, complete: 900, pro: 1300, extraPrice: 250 }
-};
+// PRECIOS DEFINIDOS por el usuario 02/11/2026, actualizados el mismo día —
+// fuente: video-studio/PRECIOS.md. UNA SOLA ESCALERA para cualquier rubro
+// (se sacaron los dos grupos agenda/caja: confundían). "Completo" = los 2
+// primeros extras del rubro, "Pro" = los 4 — pero el precio de cada plan es
+// fijo, no una suma. Personalizado ("se cotiza") no tiene precio: va directo
+// a WhatsApp, para negocios grandes o complejos.
+const PRICE_LADDER = { standard: 350, complete: 600, pro: 900, extraPrice: 150 };
 
 // Oferta "Precio de bienvenida": -20% en cualquier plan, para siempre, para
 // los próximos 5 negocios. Apagada por ahora (02/11/2026): sale recién con
@@ -77,7 +75,6 @@ function launchPrice(price) {
 
 const QUOTE_CONFIG = {
   almacen: {
-    group: "caja",
     base: { label: "Escaneás el producto y sale el ticket" },
     extras: [
       { key: "stock", label: "Stock al día con carga de mercadería" },
@@ -87,7 +84,6 @@ const QUOTE_CONFIG = {
     ]
   },
   gimnasio: {
-    group: "agenda",
     base: { label: "Tus alumnos y quién te debe, marcado en rojo" },
     extras: [
       { key: "panel", label: "Panel de ingresos con gráficas" },
@@ -97,7 +93,6 @@ const QUOTE_CONFIG = {
     ]
   },
   restaurante: {
-    group: "caja",
     base: { label: "Tomás el pedido y sale impreso: comanda, archivo y cliente" },
     extras: [
       { key: "cierre", label: "Cierre de caja" },
@@ -107,7 +102,6 @@ const QUOTE_CONFIG = {
     ]
   },
   reservas: {
-    group: "agenda",
     base: { label: "Reservas online las 24 h + tu agenda del día + respuesta automática con tu link" },
     extras: [
       { key: "recordatorio", label: "Recordatorio automático al cliente" },
@@ -117,7 +111,6 @@ const QUOTE_CONFIG = {
     ]
   },
   distribuidora: {
-    group: "caja",
     base: { label: "Pedidos desde la calle, directo a la oficina" },
     extras: [
       { key: "boletas", label: "Boletas en la oficina" },
@@ -127,7 +120,6 @@ const QUOTE_CONFIG = {
     ]
   },
   campo: {
-    group: "caja",
     base: { label: "Tu ganado, potrero por potrero, con traslados" },
     extras: [
       { key: "lluvias", label: "Registro de lluvias" },
@@ -140,14 +132,13 @@ const QUOTE_CONFIG = {
 
 function getPlans(rubro) {
   const cfg = QUOTE_CONFIG[rubro];
-  const group = PRICE_GROUPS[cfg.group];
   const completeItems = cfg.extras.slice(0, 2).map((extra) => extra.label);
   const proItems = cfg.extras.map((extra) => extra.label);
-  const allLooseTotal = group.standard + group.extraPrice * cfg.extras.length;
+  const allLooseTotal = PRICE_LADDER.standard + PRICE_LADDER.extraPrice * cfg.extras.length;
   return [
-    { name: "Estándar", price: group.standard, items: [] },
-    { name: "Completo", price: group.complete, items: completeItems, featured: true },
-    { name: "Pro", price: group.pro, items: proItems, savings: allLooseTotal - group.pro }
+    { name: "Estándar", price: PRICE_LADDER.standard, items: [] },
+    { name: "Completo", price: PRICE_LADDER.complete, items: completeItems, featured: true },
+    { name: "Pro", price: PRICE_LADDER.pro, items: proItems, savings: allLooseTotal - PRICE_LADDER.pro }
   ];
 }
 
@@ -234,7 +225,6 @@ function createQuoteController(panelEl) {
     const cfg = QUOTE_CONFIG[rubro];
     const entry = RUBRO_VIDEO[rubro];
     if (!cfg || !entry) return;
-    const group = PRICE_GROUPS[cfg.group];
     const banner = renderLaunchBanner();
 
     if (step === "choice") {
@@ -266,11 +256,22 @@ function createQuoteController(panelEl) {
           `
             )
             .join("")}
+          <a
+            class="quote-plan-card quote-plan-card-custom"
+            data-plan-custom
+            href="${buildWhatsappUrl("Hola! Quiero un plan personalizado para mi negocio")}"
+            target="_blank"
+            rel="noopener"
+          >
+            <div class="quote-plan-card-name">Personalizado</div>
+            <div class="quote-plan-card-price"><span class="quote-price-launch">Se cotiza</span></div>
+            <div class="quote-plan-card-items">Para negocios grandes o complejos: varias cajas, delivery con repartidores, sucursales…</div>
+          </a>
         </div>
       `;
     } else if (step === "custom") {
       const selectedExtras = cfg.extras.filter((extra) => selected.has(extra.key));
-      const total = group.standard + selectedExtras.length * group.extraPrice;
+      const total = PRICE_LADDER.standard + selectedExtras.length * PRICE_LADDER.extraPrice;
       const descriptor = selectedExtras.length ? selectedExtras.map((extra) => extra.label).join(", ") : "Plan base";
       panelEl.innerHTML = `
         ${banner}
@@ -278,7 +279,7 @@ function createQuoteController(panelEl) {
         <h3 class="quote-title">Armá el tuyo</h3>
         <div class="quote-base-row">
           <span>${cfg.base.label}</span>
-          <span class="quote-base-price">$${group.standard}/mes</span>
+          <span class="quote-base-price">$${PRICE_LADDER.standard}/mes</span>
         </div>
         <div class="quote-extras">
           ${cfg.extras
@@ -287,7 +288,7 @@ function createQuoteController(panelEl) {
             <label class="quote-extra-row">
               <input type="checkbox" data-extra-key="${extra.key}" ${selected.has(extra.key) ? "checked" : ""} />
               <span class="quote-extra-label">${extra.label}</span>
-              <span class="quote-extra-price">+$${group.extraPrice}</span>
+              <span class="quote-extra-price">+$${PRICE_LADDER.extraPrice}</span>
             </label>
           `
             )
@@ -332,6 +333,11 @@ function createQuoteController(panelEl) {
     const sendButton = panelEl.querySelector(".quote-send-btn");
     if (sendButton) {
       sendButton.addEventListener("click", () => track("cotizador_enviar", { rubro, plan: "custom" }));
+    }
+
+    const customPlanButton = panelEl.querySelector("[data-plan-custom]");
+    if (customPlanButton) {
+      customPlanButton.addEventListener("click", () => track("cotizador_enviar", { rubro, plan: "personalizado" }));
     }
 
     panelEl.querySelectorAll("[data-extra-key]").forEach((checkbox) => {
