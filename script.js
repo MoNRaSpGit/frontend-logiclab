@@ -1,23 +1,44 @@
 const WHATSAPP_NUMBER = "59892945696";
 
-// Medición (GoatCounter). No-op si la cuenta todavía no está creada o el
-// script no cargó (ej. bloqueado por un adblock) — nunca rompe la página.
-function gcTrack(path) {
+// Medición propia (02/11/2026): reemplaza GoatCounter porque el usuario
+// quiere los datos en su propia base, sin cuentas externas. Sin cookies:
+// visitorId es un id al azar que vive solo mientras la página está abierta.
+// Se consulta con backend/scripts/inspect-logiclab-visits.js. Nunca debe
+// romper ni frenar la página: cualquier error se ignora en silencio.
+const API_BASE_URL =
+  location.hostname === "localhost" || location.hostname === "127.0.0.1"
+    ? "http://localhost:3000"
+    : "https://saasproback.onrender.com";
+
+function randomVisitorId() {
   try {
-    if (window.goatcounter && typeof window.goatcounter.count === "function") {
-      window.goatcounter.count({ path, event: true });
-    }
+    return crypto.randomUUID();
+  } catch {
+    return `v${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
+  }
+}
+
+const visitorId = randomVisitorId();
+
+function track(event, extra) {
+  try {
+    void fetch(`${API_BASE_URL}/logiclab/events/track`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visitorId, event, ...extra }),
+      keepalive: true
+    }).catch(() => {});
   } catch (e) {
     /* medición opcional, nunca debe romper la página */
   }
 }
 
-// Lee ?src=whatsapp|instagram|bio|google de la URL y lo registra como
-// evento para saber de dónde vino la visita. El link con ?src=whatsapp va
-// en el mensaje automático de WhatsApp Business (pendiente de cargar U).
-function trackVisitSource() {
-  const src = new URLSearchParams(window.location.search).get("src");
-  if (src) gcTrack(`visita-origen/${src}`);
+// Lee ?src=whatsapp|instagram|bio|google de la URL y la manda con la
+// visita, para saber de dónde vino. El link con ?src=whatsapp va en el
+// mensaje automático de WhatsApp Business (pendiente de cargar U).
+function trackVisit() {
+  const src = new URLSearchParams(window.location.search).get("src") || undefined;
+  track("visit", { src });
 }
 
 const RUBRO_VIDEO = {
@@ -160,7 +181,7 @@ function setupWhatsappLinks() {
     link.setAttribute("target", "_blank");
     link.setAttribute("rel", "noopener");
     const section = link.getAttribute("data-wa-section") || "otro";
-    link.addEventListener("click", () => gcTrack(`wa-click/${section}`));
+    link.addEventListener("click", () => track("wa_click", { section }));
   });
 }
 
@@ -302,14 +323,14 @@ function createQuoteController(panelEl) {
       button.addEventListener("click", () => {
         const plan = getPlans(rubro)[Number(button.getAttribute("data-plan-index"))];
         const url = buildWhatsappUrl(buildQuoteMessage(entry.keyword, `Plan ${plan.name}`, plan.price));
-        gcTrack(`cotizador-enviar/${rubro}-plan-${plan.name.toLowerCase()}`);
+        track("cotizador_enviar", { rubro, plan: plan.name.toLowerCase() });
         window.open(url, "_blank", "noopener");
       });
     });
 
     const sendButton = panelEl.querySelector(".quote-send-btn");
     if (sendButton) {
-      sendButton.addEventListener("click", () => gcTrack(`cotizador-enviar/${rubro}-custom`));
+      sendButton.addEventListener("click", () => track("cotizador_enviar", { rubro, plan: "custom" }));
     }
 
     panelEl.querySelectorAll("[data-extra-key]").forEach((checkbox) => {
@@ -347,7 +368,7 @@ function setupRubroVideos() {
     if (!currentRubro) return;
     stage.hidden = true;
     player.pause();
-    gcTrack(`cotizador-abrir/${currentRubro}`);
+    track("cotizador_abrir", { rubro: currentRubro });
     quote.open(currentRubro);
   }
 
@@ -362,7 +383,7 @@ function setupRubroVideos() {
     cta.href = buildWhatsappUrl(`Hola! Vi el video de ${entry.keyword}`);
     cta.classList.remove("video-modal-cta-pulse");
     question.hidden = true;
-    gcTrack(`ver-video/${rubro}`);
+    track("ver_video", { rubro });
   }
 
   function closeModal() {
@@ -383,7 +404,7 @@ function setupRubroVideos() {
   });
 
   cta.addEventListener("click", () => {
-    if (currentRubro) gcTrack(`wa-click/rubro-${currentRubro}`);
+    if (currentRubro) track("wa_click", { section: "rubro", rubro: currentRubro });
   });
 
   quoteOpenButtons.forEach((button) => {
@@ -411,4 +432,4 @@ function setupRubroVideos() {
 setupWhatsappLinks();
 setupHeroVideo();
 setupRubroVideos();
-trackVisitSource();
+trackVisit();

@@ -13,16 +13,29 @@ por rubro, `robots.txt`, `sitemap.xml`, canonical.
    línea comentada `<!-- <meta name="google-site-verification" ... /> -->`
    (descomentarla).
 
-## 2. GoatCounter — contador de visitas (gratis, sin cookies)
+## 2. Contador de visitas — propio, sin cuenta externa (02/11/2026)
 
-1. Entrar a https://www.goatcounter.com/ y crear cuenta.
-2. Elegir un código de sitio (ej. `logiclab`) → queda en `logiclab.goatcounter.com`.
-3. Pasar ese código: en `index.html` reemplazar `MYCODE` por el código elegido,
-   en la línea `data-goatcounter="https://MYCODE.goatcounter.com/count"`.
+Se sacó GoatCounter: el usuario pidió los datos en su propia base. Ahora
+`script.js` manda cada evento al backend (`POST /logiclab/events/track`,
+módulo `backend/src/modules/logiclab/`), que los guarda en la tabla
+`saas_logiclab_events` (migración `db/migrations/115_saas_logiclab_events.sql`).
+Sin cookies; nunca se guarda la IP tal cual, solo un hash con sal
+(`visitor_hash`) para aproximar visitantes únicos por día.
 
-Ya queda contando automáticamente: visitas, de dónde vienen (`?src=...`),
-clics en cada botón de WhatsApp (por sección), "Ver video" por rubro,
-apertura del cotizador y "enviar presupuesto" por rubro/plan.
+Ya queda contando automáticamente: visitas por día y únicos aproximados,
+de dónde vienen (`?src=...`), "Ver video" por rubro, clics de WhatsApp por
+sección (con la keyword del rubro cuando corresponde), y apertura del
+cotizador + "enviar presupuesto" por rubro/plan.
+
+**Para verlo:** `node scripts/inspect-logiclab-visits.js [desde] [hasta]`
+desde `backend/` (igual que `inspect-gym-activity.js`). Más adelante puede
+pasar a una pestaña del Scrum.
+
+**Pendiente de ejecutar una sola vez** (bloqueado para mí por ser un cambio
+directo a la base de producción): correr
+`node scripts/apply-115-logiclab-events-migration.js` desde `backend/` para
+crear la tabla. Sin eso, el contador no rompe nada pero tampoco guarda nada
+todavía (el insert falla en silencio).
 
 ## 3. Dominio propio (cuando se compre)
 
