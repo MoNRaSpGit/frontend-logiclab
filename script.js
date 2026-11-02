@@ -44,7 +44,8 @@ function setupHeroVideo() {
 function setupRubroVideos() {
   const modal = document.querySelector("[data-video-modal]");
   const player = document.querySelector("[data-video-player]");
-  if (!modal || !player) return;
+  const cta = document.querySelector("[data-video-cta]");
+  if (!modal || !player || !cta) return;
 
   function openModal(rubro) {
     const entry = RUBRO_VIDEO[rubro];
@@ -52,6 +53,8 @@ function setupRubroVideos() {
     player.src = entry.src;
     modal.hidden = false;
     player.play();
+    cta.href = buildWhatsappUrl(`Hola! Vi el video de ${entry.keyword}`);
+    cta.classList.remove("video-modal-cta-pulse");
   }
 
   function closeModal() {
@@ -59,7 +62,12 @@ function setupRubroVideos() {
     player.pause();
     player.removeAttribute("src");
     player.load();
+    cta.classList.remove("video-modal-cta-pulse");
   }
+
+  player.addEventListener("ended", () => {
+    cta.classList.add("video-modal-cta-pulse");
+  });
 
   document.querySelectorAll("[data-rubro]").forEach((card) => {
     const rubro = card.getAttribute("data-rubro");
