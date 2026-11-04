@@ -84,7 +84,7 @@ const QUOTE_CONFIG = {
     ]
   },
   gimnasio: {
-    base: { label: "Tus alumnos y quién te debe, marcado en rojo" },
+    base: { label: "Tus alumnos y sus mensualidades al día, con los vencimientos marcados" },
     extras: [
       { key: "panel", label: "Panel de ingresos con gráficas" },
       { key: "progreso", label: "Progreso de cada alumno" },
