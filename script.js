@@ -302,7 +302,15 @@ function setupHeroVideo() {
   const playButton = document.querySelector(".phone-play");
   if (!video || !playButton) return;
 
+  // Cada video se cuenta una vez por visita.
+  let counted = false;
+  video.addEventListener("ended", () => track("video_completo", { rubro: "generico" }));
+
   playButton.addEventListener("click", () => {
+    if (!counted) {
+      counted = true;
+      track("ver_video", { rubro: "generico" });
+    }
     const src = video.getAttribute("data-lazy-src");
     if (src && !video.src) {
       video.src = src;
@@ -526,6 +534,7 @@ function setupRubroVideos() {
   }
 
   player.addEventListener("ended", () => {
+    if (currentRubro) track("video_completo", { rubro: currentRubro });
     cta.classList.add("video-modal-cta-pulse");
     question.hidden = false;
   });
@@ -556,7 +565,40 @@ function setupRubroVideos() {
   });
 }
 
+// Por dónde anduvo (27/11/2026): qué partes llegó a ver y qué botones tocó
+// además de WhatsApp. Cada cosa se cuenta una sola vez por visita.
+function setupJourneyTracking() {
+  [
+    ["[data-promo-link]", "popup-qq"],
+    ['a.btn[href="#rubros"]', "como-funciona"],
+    ["[data-bf-banner]", "banner-black-friday"]
+  ].forEach(([selector, section]) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      element.addEventListener("click", () => track("clic", { section }));
+    });
+  });
+
+  if (!("IntersectionObserver" in window)) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        track("ver_seccion", { section: entry.target.id });
+      });
+    },
+    // Cuenta cuando la sección llega a la mitad de la pantalla (sirve aunque
+    // sea más alta que el celular).
+    { rootMargin: "0px 0px -50% 0px" }
+  );
+  ["rubros", "precios"].forEach((id) => {
+    const section = document.getElementById(id);
+    if (section) observer.observe(section);
+  });
+}
+
 setupBlackFriday();
+setupJourneyTracking();
 setupWhatsappLinks();
 setupHeroVideo();
 setupRubroVideos();
