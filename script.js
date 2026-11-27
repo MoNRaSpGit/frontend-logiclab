@@ -247,8 +247,8 @@ function setupBlackFriday() {
 }
 
 // Pop-up de streaming: entra desde la derecha a los 4 s, se cierra solo a los
-// 10 s (o con la cruz) y sale una sola vez por visita. No aparece encima del
-// video: espera a que se cierre.
+// 10 s (o con la cruz). Sale cada vez que se abre o se recarga la página. No
+// aparece encima del video: espera a que se cierre.
 const PROMO_DELAY_MS = 4000;
 const PROMO_VISIBLE_MS = 10000;
 
@@ -257,12 +257,8 @@ function setupPromoPopup() {
   const modal = document.querySelector("[data-video-modal]");
   // A quien viene de Qq no se le ofrece volver.
   if (!popup || fromQq) return;
-  try {
-    if (sessionStorage.getItem("ll-promo")) return;
-  } catch {
-    /* sin almacenamiento igual se muestra */
-  }
   let closeTimer = 0;
+  let showTimer = 0;
 
   function close() {
     clearTimeout(closeTimer);
@@ -274,7 +270,7 @@ function setupPromoPopup() {
 
   function show() {
     if (modal && !modal.hidden) {
-      setTimeout(show, 3000);
+      showTimer = setTimeout(show, 3000);
       return;
     }
     popup.hidden = false;
@@ -282,17 +278,22 @@ function setupPromoPopup() {
     void popup.offsetWidth;
     popup.classList.add("promo-popup-visible");
     closeTimer = setTimeout(close, PROMO_VISIBLE_MS);
-    try {
-      sessionStorage.setItem("ll-promo", "1");
-    } catch {
-      /* opcional */
-    }
   }
 
   popup.querySelector("[data-promo-close]").addEventListener("click", close);
   popup.querySelector("[data-promo-link]").addEventListener("click", close);
   document.querySelectorAll("[data-play-video]").forEach((trigger) => trigger.addEventListener("click", close));
-  setTimeout(show, PROMO_DELAY_MS);
+  showTimer = setTimeout(show, PROMO_DELAY_MS);
+
+  // Volver con la flecha "atrás" restaura la página sin recargarla.
+  window.addEventListener("pageshow", (event) => {
+    if (!event.persisted) return;
+    clearTimeout(showTimer);
+    clearTimeout(closeTimer);
+    popup.classList.remove("promo-popup-visible");
+    popup.hidden = true;
+    showTimer = setTimeout(show, PROMO_DELAY_MS);
+  });
 }
 
 function setupHeroVideo() {
