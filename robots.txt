@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://monraspgit.github.io/frontend-logiclab/sitemap.xml
+Sitemap: https://logiclabuy.com/sitemap.xml

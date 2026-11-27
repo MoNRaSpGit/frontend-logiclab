@@ -7,8 +7,8 @@ const WHATSAPP_NUMBER = "59892945696";
 // romper ni frenar la página: cualquier error se ignora en silencio.
 const API_BASE_URL =
   location.hostname === "localhost" || location.hostname === "127.0.0.1"
-    ? "http://localhost:3000"
-    : "https://saasproback.onrender.com";
+    ? "http://localhost:3000/api/v1"
+    : "https://saasproback.onrender.com/api/v1";
 
 function randomVisitorId() {
   try {
