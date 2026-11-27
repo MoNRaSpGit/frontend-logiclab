@@ -23,7 +23,7 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20261127" />
 
     <!--
       Google Search Console: cuando el usuario cree la cuenta (gratis, con su
@@ -73,6 +73,12 @@
     </header>
 
     <main>
+      <!-- Franja Black Friday: la muestra script.js solo del 27 al 30/11/2026 -->
+      <a class="bf-banner" data-bf-banner href="#precios" hidden>
+        <strong>Black Friday: 30% menos, para siempre</strong>
+        <span>Solo hasta el lunes 30 · Planes desde $245 por mes ›</span>
+      </a>
+
       <!-- 1. HERO -->
       <section class="hero">
         <div class="hero-text">
@@ -225,21 +231,21 @@
       </section>
 
       <!-- 5. PRECIOS -->
-      <section class="section">
-        <h2>Planes de $350, $600 y $900 por mes</h2>
+      <section id="precios" class="section">
+        <h2 data-precios-titulo>Planes de $350, $600 y $900 por mes</h2>
         <p class="precios-intro">Para cualquier negocio. ¿Tu negocio es más grande? Lo armamos a tu medida.</p>
         <div class="precios-grid">
           <article class="precio-card">
             <h3>Estándar</h3>
-            <p class="precio-valor">$350/mes</p>
+            <p class="precio-valor" data-precio="350">$350/mes</p>
           </article>
           <article class="precio-card precio-card-featured">
             <h3>★ Completo</h3>
-            <p class="precio-valor">$600/mes</p>
+            <p class="precio-valor" data-precio="600">$600/mes</p>
           </article>
           <article class="precio-card">
             <h3>Pro</h3>
-            <p class="precio-valor">$900/mes</p>
+            <p class="precio-valor" data-precio="900">$900/mes</p>
           </article>
           <article class="precio-card precio-card-custom">
             <h3>Personalizado</h3>
@@ -248,6 +254,10 @@
         </div>
         <p class="precios-footnote">Todos incluyen soporte por WhatsApp y capacitación para tu personal.</p>
         <p class="precios-footnote precios-footnote-strong">Cualquiera de ellos: 1 mes gratis para probar.</p>
+        <p class="precios-footnote bf-terms" data-bf-terms hidden>
+          Black Friday: el 30% menos es para siempre. Cuando termina el mes gratis, pagás el plan que elijas con ese
+          descuento. Solo para clientes nuevos que escriban hasta el lunes 30/11.
+        </p>
       </section>
 
       <!-- 6. PREGUNTAS FRECUENTES -->
@@ -264,13 +274,7 @@
           </details>
           <details>
             <summary>¿Qué pasa cuando termina el mes gratis?</summary>
-            <!-- Pendiente de definir por el usuario (ver WEB-LOGICLAB-BRIEF.md, punto 2) -->
-            <p>[Texto a definir por el usuario]</p>
-          </details>
-          <details>
-            <summary>¿Funciona si se corta internet?</summary>
-            <!-- Pendiente de definir por el usuario (ver WEB-LOGICLAB-BRIEF.md, punto 2) -->
-            <p>[Texto a definir por el usuario]</p>
+            <p>Empezás a pagar por mes el plan que elijas. Y si no te sirve, cancelás.</p>
           </details>
         </div>
       </section>
@@ -345,6 +349,6 @@
       </div>
     </div>
 
-    <script src="script.js" defer></script>
+    <script src="script.js?v=20261127" defer></script>
   </body>
 </html>

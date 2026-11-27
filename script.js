@@ -69,8 +69,28 @@ const LAUNCH_DEADLINE = "";
 const LAUNCH_DISCOUNT = 0.2;
 const LAUNCH_SPOTS = 5;
 
-function launchPrice(price) {
-  return Math.round(price * (1 - LAUNCH_DISCOUNT));
+// Black Friday 2026: -30% del viernes 27 al lunes 30/11 (hora de Uruguay),
+// se prende y se apaga sola. Quien entra esos días tiene el descuento para
+// siempre (se cobra al terminar el mes gratis), solo clientes nuevos.
+// Mientras dura, pisa la oferta de bienvenida.
+const BLACK_FRIDAY = {
+  start: Date.parse("2026-11-27T00:00:00-03:00"),
+  end: Date.parse("2026-12-01T00:00:00-03:00"),
+  discount: 0.3
+};
+
+function isBlackFriday() {
+  const now = Date.now();
+  return now >= BLACK_FRIDAY.start && now < BLACK_FRIDAY.end;
+}
+
+function hasOffer() {
+  return isBlackFriday() || LAUNCH_OFFER_ACTIVE;
+}
+
+function offerPrice(price) {
+  const discount = isBlackFriday() ? BLACK_FRIDAY.discount : LAUNCH_DISCOUNT;
+  return Math.round(price * (1 - discount));
 }
 
 const QUOTE_CONFIG = {
@@ -143,24 +163,29 @@ function getPlans(rubro) {
 }
 
 function buildWhatsappUrl(message) {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  const text = isBlackFriday() ? `${message} (Black Friday: 30% menos)` : message;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
 function buildQuoteMessage(keyword, descriptor, total) {
-  const price = LAUNCH_OFFER_ACTIVE ? launchPrice(total) : total;
-  const suffix = LAUNCH_OFFER_ACTIVE ? " (precio de bienvenida)" : "";
+  const price = hasOffer() ? offerPrice(total) : total;
+  // La etiqueta de Black Friday la agrega buildWhatsappUrl.
+  const suffix = LAUNCH_OFFER_ACTIVE && !isBlackFriday() ? " (precio de bienvenida)" : "";
   return `Hola! Armé mi presupuesto de ${keyword}: ${descriptor} ≈ $${price}/mes${suffix}`;
 }
 
 function renderPriceTag(price) {
-  if (!LAUNCH_OFFER_ACTIVE) return `<span class="quote-price-launch">$${price}/mes</span>`;
+  if (!hasOffer()) return `<span class="quote-price-launch">$${price}/mes</span>`;
   return `
     <span class="quote-price-strike">$${price}</span>
-    <span class="quote-price-launch">$${launchPrice(price)}/mes</span>
+    <span class="quote-price-launch">$${offerPrice(price)}/mes</span>
   `;
 }
 
 function renderLaunchBanner() {
+  if (isBlackFriday()) {
+    return `<div class="quote-launch-banner">Black Friday: 30% menos para siempre, solo hasta el lunes 30</div>`;
+  }
   if (!LAUNCH_OFFER_ACTIVE) return "";
   const deadline = LAUNCH_DEADLINE ? ` antes del ${LAUNCH_DEADLINE}` : "";
   return `<div class="quote-launch-banner">Precio de bienvenida: −20% para siempre, para los próximos ${LAUNCH_SPOTS} negocios${deadline}</div>`;
@@ -174,6 +199,18 @@ function setupWhatsappLinks() {
     link.setAttribute("rel", "noopener");
     const section = link.getAttribute("data-wa-section") || "otro";
     link.addEventListener("click", () => track("wa_click", { section }));
+  });
+}
+
+function setupBlackFriday() {
+  if (!isBlackFriday()) return;
+  document.querySelectorAll("[data-bf-banner], [data-bf-terms]").forEach((element) => {
+    element.hidden = false;
+  });
+  const title = document.querySelector("[data-precios-titulo]");
+  if (title) title.textContent = "Black Friday: planes desde $245 por mes";
+  document.querySelectorAll("[data-precio]").forEach((element) => {
+    element.innerHTML = renderPriceTag(Number(element.getAttribute("data-precio")));
   });
 }
 
@@ -251,7 +288,7 @@ function createQuoteController(panelEl) {
               <div class="quote-plan-card-name">${plan.name}</div>
               <div class="quote-plan-card-price">${renderPriceTag(plan.price)}</div>
               <div class="quote-plan-card-items">${plan.items.length ? `Incluye: ${plan.items.join(", ")}` : "La base, sin extras"}</div>
-              ${plan.savings ? `<div class="quote-plan-card-savings">Ahorrás $${plan.savings}/mes comparado a todo suelto</div>` : ""}
+              ${plan.savings && !hasOffer() ? `<div class="quote-plan-card-savings">Ahorrás $${plan.savings}/mes comparado a todo suelto</div>` : ""}
             </button>
           `
             )
@@ -436,6 +473,7 @@ function setupRubroVideos() {
   });
 }
 
+setupBlackFriday();
 setupWhatsappLinks();
 setupHeroVideo();
 setupRubroVideos();
