@@ -20,12 +20,43 @@ function randomVisitorId() {
 
 const visitorId = randomVisitorId();
 
+// Derivados desde Qq Digital (27/11/2026): su aviso entra con ?ref=qq. La
+// marca dura 30 días, sale en cada mensaje de WhatsApp y en la medición.
+const REFERRAL_KEY = "ll-referral";
+const REFERRAL_MS = 30 * 24 * 60 * 60 * 1000;
+
+function detectReferral() {
+  let fromLink = false;
+  try {
+    const url = new URL(window.location.href);
+    fromLink = (url.searchParams.get("ref") || "").toLowerCase() === "qq";
+    if (fromLink) {
+      // Se saca de la barra: si comparten el link, no arrastra la marca.
+      url.searchParams.delete("ref");
+      window.history.replaceState(window.history.state, "", url.toString());
+    }
+  } catch (e) {
+    /* sin URL no hay marca */
+  }
+  try {
+    if (fromLink) {
+      localStorage.setItem(REFERRAL_KEY, String(Date.now() + REFERRAL_MS));
+      return true;
+    }
+    return Number(localStorage.getItem(REFERRAL_KEY) || 0) > Date.now();
+  } catch (e) {
+    return fromLink;
+  }
+}
+
+const fromQq = detectReferral();
+
 function track(event, extra) {
   try {
     void fetch(`${API_BASE_URL}/logiclab/events/track`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ visitorId, event, ...extra }),
+      body: JSON.stringify({ visitorId, event, ...extra, ...(fromQq ? { src: "ref-qq" } : {}) }),
       keepalive: true
     }).catch(() => {});
   } catch (e) {
@@ -163,7 +194,8 @@ function getPlans(rubro) {
 }
 
 function buildWhatsappUrl(message) {
-  const text = isBlackFriday() ? `${message} (Black Friday: 30% menos)` : message;
+  const offer = isBlackFriday() ? `${message} (Black Friday: 30% menos)` : message;
+  const text = fromQq ? `${offer}\n\n✳️ Ref: QQ` : offer;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
@@ -223,7 +255,8 @@ const PROMO_VISIBLE_MS = 10000;
 function setupPromoPopup() {
   const popup = document.querySelector("[data-promo]");
   const modal = document.querySelector("[data-video-modal]");
-  if (!popup) return;
+  // A quien viene de Qq no se le ofrece volver.
+  if (!popup || fromQq) return;
   try {
     if (sessionStorage.getItem("ll-promo")) return;
   } catch {
