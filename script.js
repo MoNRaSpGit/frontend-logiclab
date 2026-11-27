@@ -255,8 +255,9 @@ const PROMO_VISIBLE_MS = 10000;
 function setupPromoPopup() {
   const popup = document.querySelector("[data-promo]");
   const modal = document.querySelector("[data-video-modal]");
-  // A quien viene de Qq no se le ofrece volver.
-  if (!popup || fromQq) return;
+  if (!popup) return;
+  // Quien vino de Qq vuelve sin la marca "ref=ll": sigue siendo derivado de ellos.
+  if (fromQq) popup.querySelector("[data-promo-link]").href = "https://qqdigital.net/";
   let closeTimer = 0;
   let showTimer = 0;
 
