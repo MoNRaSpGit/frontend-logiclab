@@ -249,13 +249,15 @@ function setupBlackFriday() {
 // Pop-up de streaming: entra desde la derecha a los 4 s, se cierra solo a los
 // 10 s (o con la cruz). Sale cada vez que se abre o se recarga la página. No
 // aparece encima del video: espera a que se cierre.
+// DESACTIVADO por ahora (27/11/2026, pedido explicito). Para prenderlo: true.
+const PROMO_ACTIVE = false;
 const PROMO_DELAY_MS = 4000;
 const PROMO_VISIBLE_MS = 10000;
 
 function setupPromoPopup() {
   const popup = document.querySelector("[data-promo]");
   const modal = document.querySelector("[data-video-modal]");
-  if (!popup) return;
+  if (!PROMO_ACTIVE || !popup) return;
   // Quien vino de Qq vuelve sin la marca "ref=ll": sigue siendo derivado de ellos.
   if (fromQq) popup.querySelector("[data-promo-link]").href = "https://qqdigital.net/";
   let closeTimer = 0;
