@@ -23,7 +23,7 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20261127" />
+    <link rel="stylesheet" href="styles.css?v=20261127c" />
 
     <!--
       Google Search Console: cuando el usuario cree la cuenta (gratis, con su
@@ -320,6 +320,17 @@
       </svg>
     </a>
 
+    <!-- Pop-up de streaming: lleva a Qq Digital marcando que va de nuestra web -->
+    <aside class="promo-popup" data-promo hidden>
+      <button type="button" class="promo-close" data-promo-close aria-label="Cerrar aviso">✕</button>
+      <a class="promo-link" data-promo-link href="https://qqdigital.net/?ref=ll" target="_blank" rel="noopener">
+        <strong>También tenemos streaming&nbsp;🎬</strong>
+        <span>Netflix, Spotify, Disney+ y más.</span>
+        <span class="promo-cta">Ver ›</span>
+      </a>
+      <span class="promo-timer" aria-hidden="true"></span>
+    </aside>
+
     <!-- Modal de video -->
     <div class="video-modal" data-video-modal hidden>
       <div class="video-modal-backdrop" data-video-close></div>
@@ -349,6 +360,6 @@
       </div>
     </div>
 
-    <script src="script.js?v=20261127b" defer></script>
+    <script src="script.js?v=20261127c" defer></script>
   </body>
 </html>

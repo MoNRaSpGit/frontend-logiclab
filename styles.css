@@ -941,3 +941,79 @@ p {
   margin: 12px auto 0;
   font-size: 13px;
 }
+
+/* Pop-up de streaming (27/11/2026) */
+
+.promo-popup {
+  position: fixed;
+  right: 14px;
+  bottom: 86px;
+  z-index: 40;
+  width: min(324px, calc(100vw - 28px));
+  background: var(--card);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transform: translateX(calc(100% + 30px));
+  transition: transform 0.4s ease;
+}
+
+.promo-popup[hidden] {
+  display: none;
+}
+
+.promo-popup-visible {
+  transform: translateX(0);
+}
+
+.promo-link {
+  display: grid;
+  gap: 4px;
+  padding: 16px 40px 18px 16px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.promo-link strong {
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.promo-cta {
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.promo-close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.promo-timer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--gold);
+  transform-origin: left;
+}
+
+.promo-popup-visible .promo-timer {
+  animation: promo-countdown 10s linear forwards;
+}
+
+@keyframes promo-countdown {
+  to {
+    transform: scaleX(0);
+  }
+}

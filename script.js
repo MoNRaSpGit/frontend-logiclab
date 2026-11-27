@@ -214,6 +214,54 @@ function setupBlackFriday() {
   });
 }
 
+// Pop-up de streaming: entra desde la derecha a los 4 s, se cierra solo a los
+// 10 s (o con la cruz) y sale una sola vez por visita. No aparece encima del
+// video: espera a que se cierre.
+const PROMO_DELAY_MS = 4000;
+const PROMO_VISIBLE_MS = 10000;
+
+function setupPromoPopup() {
+  const popup = document.querySelector("[data-promo]");
+  const modal = document.querySelector("[data-video-modal]");
+  if (!popup) return;
+  try {
+    if (sessionStorage.getItem("ll-promo")) return;
+  } catch {
+    /* sin almacenamiento igual se muestra */
+  }
+  let closeTimer = 0;
+
+  function close() {
+    clearTimeout(closeTimer);
+    popup.classList.remove("promo-popup-visible");
+    setTimeout(() => {
+      popup.hidden = true;
+    }, 450);
+  }
+
+  function show() {
+    if (modal && !modal.hidden) {
+      setTimeout(show, 3000);
+      return;
+    }
+    popup.hidden = false;
+    // Fuerza el calculo de estilos para que la entrada se anime.
+    void popup.offsetWidth;
+    popup.classList.add("promo-popup-visible");
+    closeTimer = setTimeout(close, PROMO_VISIBLE_MS);
+    try {
+      sessionStorage.setItem("ll-promo", "1");
+    } catch {
+      /* opcional */
+    }
+  }
+
+  popup.querySelector("[data-promo-close]").addEventListener("click", close);
+  popup.querySelector("[data-promo-link]").addEventListener("click", close);
+  document.querySelectorAll("[data-play-video]").forEach((trigger) => trigger.addEventListener("click", close));
+  setTimeout(show, PROMO_DELAY_MS);
+}
+
 function setupHeroVideo() {
   const video = document.querySelector(".phone-video");
   const playButton = document.querySelector(".phone-play");
@@ -477,4 +525,5 @@ setupBlackFriday();
 setupWhatsappLinks();
 setupHeroVideo();
 setupRubroVideos();
+setupPromoPopup();
 trackVisit();
