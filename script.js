@@ -42,7 +42,7 @@ function trackVisit() {
 }
 
 const RUBRO_VIDEO = {
-  almacen: { src: "media/reels/almacen.mp4", keyword: "ALMACÉN", label: "Almacén y kiosco" },
+  almacen: { src: "media/reels/almacen.mp4", keyword: "COMERCIO", label: "Comercio" },
   gimnasio: { src: "media/reels/gimnasio.mp4", keyword: "GIMNASIO", label: "Gimnasio" },
   restaurante: { src: "media/reels/restaurante.mp4", keyword: "RESTAURANTE", label: "Restaurante" },
   reservas: { src: "media/reels/reservas.mp4", keyword: "TURNOS", label: "Turnos y reservas" },
